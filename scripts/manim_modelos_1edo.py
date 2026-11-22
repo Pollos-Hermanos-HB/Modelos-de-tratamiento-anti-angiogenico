@@ -12,11 +12,9 @@ Parámetros: los mismos supuestos del informe (no vienen del paper).
 from manim import *
 import numpy as np
 
-MU, K, N0 = 0.5, 1.0, 0.01     # supuestos del equipo
+MU, K, N0 = 0.5, 1.0, 0.01    
 T_MAX = 20.0
 
-
-# ---------- Matemática (misma que el informe) ----------
 def sol(t, nu):
     """Solución exacta del logístico generalizado (ec. 4); Gompertz si nu ~ 0."""
     if nu < 1e-6:
