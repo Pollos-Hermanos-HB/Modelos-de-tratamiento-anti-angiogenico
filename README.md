@@ -5,7 +5,6 @@
   <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
   <img src="https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white" alt="SciPy">
   <img src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge&logo=plotly&logoColor=white" alt="Matplotlib">
-  <img src="https://img.shields.io/badge/LaTeX-008080?style=for-the-badge&logo=latex&logoColor=white" alt="LaTeX">
 </p>
 
 <p align="center">
@@ -206,22 +205,6 @@ Las Figuras 3 a 8 de este documento se generaron con un script de Python (NumPy,
 pip install numpy scipy matplotlib
 python figuras_proyecto.py   # escribe las figuras 3 a 8 en figs/
 ```
-
-Para el proyecto se propone esta estructura de repositorio, con un único archivo de parámetros para que todos los resultados coincidan:
-
-```text
-proyecto-edo/
-├── params.py          # parámetros de todos los modelos (un solo lugar)
-├── modelos/
-│   ├── una_edo.py     # logístico generalizado, Gompertz, soluciones exactas
-│   ├── angiogenesis.py# sistema (N, K), tratamiento c(t), Euler y RK4
-│   └── lq.py          # modelo LQ, función G
-├── figuras/           # un script por figura
-├── reporte/           # fuente del reporte (Overleaf)
-└── README.md          # cómo correr todo desde cero
-```
-
-El método numérico del curso es Euler. Para cada modelo se recomienda compararlo con la solución exacta o con RK4 y graficar el error al reducir el paso h. Las figuras de este documento usan un integrador de paso pequeño de SciPy, por lo que sirven de referencia para validar el código de Euler del equipo.
 
 ## Referencias
 
