@@ -1,8 +1,18 @@
-# Modelos de EDO para el crecimiento tumoral y su tratamiento
+<h1 align="center">Modelos de EDO para el crecimiento tumoral y su tratamiento</h1>
 
-![Ilustración de la angiogénesis tumoral: vasos nuevos que invaden un tumor](figs/fig1_angiogenesis.jpg)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy">
+  <img src="https://img.shields.io/badge/SciPy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white" alt="SciPy">
+  <img src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge&logo=plotly&logoColor=white" alt="Matplotlib">
+  <img src="https://img.shields.io/badge/LaTeX-008080?style=for-the-badge&logo=latex&logoColor=white" alt="LaTeX">
+</p>
 
-*Figura 1. Angiogénesis tumoral: el tumor recluta vasos nuevos (rojo) que le llevan oxígeno y nutrientes, aumentan su capacidad de carga y abren la vía a la diseminación.*
+<p align="center">
+  <img src="figs/fig1_angiogenesis.jpg" alt="Ilustración de la angiogénesis tumoral: vasos nuevos que invaden un tumor" width="360">
+</p>
+
+<p align="center"><em>Figura 1. Angiogénesis tumoral: el tumor recluta vasos nuevos (rojo) que le llevan oxígeno y nutrientes, aumentan su capacidad de carga y abren la vía a la diseminación.</em></p>
 
 ## Descripción del proyecto
 
@@ -54,13 +64,17 @@ La forma de la curva la fija ν. El punto de inflexión, donde el tumor crece m�
 
 El artículo menciona que el mejor ajuste clínico a tumores de mama sugiere ν cercano a 0.25. La Figura 2 compara una familia amplia de modelos: los de arriba crecen sin saturar y los de abajo se estabilizan. En la imagen, Gompertz es el que más rápido se acerca a la capacidad de carga y las variantes de von Bertalanffy son las más lentas. La Figura 3 muestra las soluciones exactas de los tres modelos del cuadro.
 
-![Comparación de modelos de crecimiento tumoral sin y con saturación](figs/fig2_comparacion_modelos.png)
+<p align="center">
+  <img src="figs/fig2_comparacion_modelos.png" alt="Comparación de modelos de crecimiento tumoral sin y con saturación" width="400">
+</p>
 
-*Figura 2. Modelos de crecimiento tumoral sin saturación (arriba) y con saturación (abajo). Imagen aportada por el equipo.*
+<p align="center"><em>Figura 2. Modelos de crecimiento tumoral sin saturación (arriba) y con saturación (abajo). Imagen aportada por el equipo.</em></p>
 
-![Soluciones exactas de los modelos logístico, generalizado y de Gompertz](figs/fig3_modelos_exactos.png)
+<p align="center">
+  <img src="figs/fig3_modelos_exactos.png" alt="Soluciones exactas de los modelos logístico, generalizado y de Gompertz" width="480">
+</p>
 
-*Figura 3. Soluciones exactas con K = 5000, N₀ = 300 y μ = 0.1 para ν = 1, ν = 0.25 y Gompertz. Los puntos marcan el punto de inflexión de cada curva.*
+<p align="center"><em>Figura 3. Soluciones exactas con K = 5000, N₀ = 300 y μ = 0.1 para ν = 1, ν = 0.25 y Gompertz. Los puntos marcan el punto de inflexión de cada curva.</em></p>
 
 ## Angiogénesis: el sistema tumor–vasos
 
@@ -82,9 +96,11 @@ La traza negativa y el determinante positivo confirman que el equilibrio es loca
 
 Al escalar N y K con (ω/γ)^(3/2) y el tiempo con 1/μ, el sistema sin tratamiento queda con un solo parámetro, ω/μ, y el equilibrio pasa a ser el punto (1, 1). La Figura 4 muestra el plano de fase en esas variables.
 
-![Plano de fase del sistema tumor–vasos con nulclinas y trayectorias](figs/fig4_plano_fase.png)
+<p align="center">
+  <img src="figs/fig4_plano_fase.png" alt="Plano de fase del sistema tumor–vasos con nulclinas y trayectorias" width="380">
+</p>
 
-*Figura 4. Plano de fase (n, k) sin tratamiento, con n = N/(ω/γ)^(3/2), k = K/(ω/γ)^(3/2), F(x) = −μ ln x y ω/μ = 1.5. Las líneas punteadas son las nulclinas (n = k y k = n^(1/3)) y las curvas continuas, trayectorias que convergen a (1, 1).*
+<p align="center"><em>Figura 4. Plano de fase (n, k) sin tratamiento, con n = N/(ω/γ)^(3/2), k = K/(ω/γ)^(3/2), F(x) = −μ ln x y ω/μ = 1.5. Las líneas punteadas son las nulclinas (n = k y k = n^(1/3)) y las curvas continuas, trayectorias que convergen a (1, 1).</em></p>
 
 ## Tratamiento antiangiogénico
 
@@ -98,9 +114,11 @@ Con tratamiento el sistema deja de ser autónomo, porque c depende del tiempo, y
 
 El artículo no da los valores numéricos de su Fig. 1, así que los parámetros de la Figura 5 son supuestos del equipo: μ = 0.35 y ω = 0.45 (días⁻¹), γ elegido para que el equilibrio sin tratamiento sea 14 cc, α = 1, c₀ = 0.5, r = 1 día⁻¹, V₀ = 0.4 cc y K₀ = 1 cc. Con ellos, el tumor sin tratar llega a unos 11.3 cc el día 25, y con tratamiento alcanza un máximo cercano a 3.5 cc, baja a unos 1.9 cc y rebrota hasta 2.8 cc.
 
-![Simulación del tratamiento antiangiogénico diario](figs/fig5_tratamiento.png)
+<p align="center">
+  <img src="figs/fig5_tratamiento.png" alt="Simulación del tratamiento antiangiogénico diario" width="520">
+</p>
 
-*Figura 5. Tratamiento antiangiogénico diario en los días 10–19, con F(x) = −μ ln x. Se muestran el tumor V y la capacidad de carga K con tratamiento, y el tumor sin tratamiento como referencia. Parámetros supuestos, calculados con un integrador de paso pequeño.*
+<p align="center"><em>Figura 5. Tratamiento antiangiogénico diario en los días 10–19, con F(x) = −μ ln x. Se muestran el tumor V y la capacidad de carga K con tratamiento, y el tumor sin tratamiento como referencia. Parámetros supuestos, calculados con un integrador de paso pequeño.</em></p>
 
 ## Radioterapia: modelo lineal-cuadrático
 
@@ -120,13 +138,17 @@ $$
 
 La Figura 6 muestra cómo la razón α/β cambia la forma de la curva: con α/β pequeño la curva se dobla antes. La Figura 7 muestra que cuanto más se prolonga la irradiación, menos pesa el término cuadrático.
 
-![Curvas de supervivencia del modelo lineal-cuadrático](figs/fig6_supervivencia_LQ.png)
+<p align="center">
+  <img src="figs/fig6_supervivencia_LQ.png" alt="Curvas de supervivencia del modelo lineal-cuadrático" width="440">
+</p>
 
-*Figura 6. Curvas de supervivencia LQ con α = 0.2 Gy⁻¹ y G = 1. Los puntos marcan D = α/β, donde los términos lineal y cuadrático pesan lo mismo.*
+<p align="center"><em>Figura 6. Curvas de supervivencia LQ con α = 0.2 Gy⁻¹ y G = 1. Los puntos marcan D = α/β, donde los términos lineal y cuadrático pesan lo mismo.</em></p>
 
-![Factor G en función de la duración relativa de la irradiación](figs/fig7_funcion_G.png)
+<p align="center">
+  <img src="figs/fig7_funcion_G.png" alt="Factor G en función de la duración relativa de la irradiación" width="420">
+</p>
 
-*Figura 7. Factor G para una tasa de dosis constante, en función de x = T/τ. Para x pequeño G ≈ 1 (dosis aguda); para x grande decae como 2/x.*
+<p align="center"><em>Figura 7. Factor G para una tasa de dosis constante, en función de x = T/τ. Para x pequeño G ≈ 1 (dosis aguda); para x grande decae como 2/x.</em></p>
 
 ## Tratamiento constante y bifurcaciones
 
@@ -148,9 +170,11 @@ $$
 
 Dentro del modelo, una dosis constante por encima de ω/α colapsa el tumor, mientras que por debajo solo reduce su tamaño de equilibrio. Estos son resultados del modelo, no una recomendación clínica. La Figura 8 muestra ambos diagramas de bifurcación.
 
-![Diagramas de bifurcación con tratamiento constante](figs/fig8_bifurcacion.png)
+<p align="center">
+  <img src="figs/fig8_bifurcacion.png" alt="Diagramas de bifurcación con tratamiento constante" width="640">
+</p>
 
-*Figura 8. Diagramas de bifurcación con dosis constante. Izquierda: equilibrio N\*/K de la EDO de una variable para ν = 1, ν = 0.25 y Gompertz; los círculos son los umbrales αc/μ = 1/ν. Derecha: equilibrio del sistema (6)–(7) con umbral en αc/ω = 1. Línea continua: estable; línea discontinua: inestable.*
+<p align="center"><em>Figura 8. Diagramas de bifurcación con dosis constante. Izquierda: equilibrio N*/K de la EDO de una variable para ν = 1, ν = 0.25 y Gompertz; los círculos son los umbrales αc/μ = 1/ν. Derecha: equilibrio del sistema (6)–(7) con umbral en αc/ω = 1. Línea continua: estable; línea discontinua: inestable.</em></p>
 
 ## Glosario de parámetros y variables
 
@@ -176,7 +200,14 @@ La letra α tiene dos significados según el modelo: en (7) es la fuerza del fá
 
 ## Estructura del código y cómo reproducir las figuras
 
-Las Figuras 3 a 8 de este documento se generaron con un script de Python (NumPy, SciPy y Matplotlib) que acompaña a esta documentación (`figuras_proyecto.py`). Para el proyecto se propone esta estructura de repositorio, con un único archivo de parámetros para que todos los resultados coincidan:
+Las Figuras 3 a 8 de este documento se generaron con un script de Python (NumPy, SciPy y Matplotlib) que acompaña a esta documentación (`figuras_proyecto.py`). Las Figuras 1 y 2 son imágenes aportadas por el equipo y no las genera el script. Para reproducir las demás:
+
+```bash
+pip install numpy scipy matplotlib
+python figuras_proyecto.py   # escribe las figuras 3 a 8 en figs/
+```
+
+Para el proyecto se propone esta estructura de repositorio, con un único archivo de parámetros para que todos los resultados coincidan:
 
 ```text
 proyecto-edo/
