@@ -153,7 +153,11 @@ F es una función decreciente con F(1) = 0, por ejemplo la de Gompertz, F(x) = �
 Sin tratamiento (c = 0) el sistema tiene un único atractor global en el cuadrante positivo:
 
 $$
-N^{*} = K^{*} = \left(\frac{\omega}{\gamma}\right)^{3/2}, \qquad J = \begin{pmatrix} -\mu & \mu \\ \omega/3 & -\omega \end{pmatrix}, \quad \operatorname{tr}J = -(\mu+\omega) < 0, \quad \det J = \tfrac{2}{3}\mu\omega > 0
+N^{\ast} = K^{\ast} = \left(\frac{\omega}{\gamma}\right)^{3/2}
+$$
+
+$$
+J = \begin{pmatrix} -\mu & \mu \\ \omega/3 & -\omega \end{pmatrix}, \quad \mathrm{tr}\,J = -(\mu+\omega) \lt 0, \quad \det J = \tfrac{2}{3}\mu\omega \gt 0
 $$
 
 La traza negativa y el determinante positivo confirman que el equilibrio es localmente estable. Esto da la explicación mecanicista de la desaceleración: al crecer, el tumor recluta vasos y puede seguir creciendo, pero la inhibición va ganando peso, K se acerca a un límite y el tumor no puede superarlo.
@@ -221,7 +225,7 @@ Esta sección es una extensión del equipo: el artículo plantea el término de 
 En la EDO de una variable con tratamiento, dN/dt = −αcN + f(N), el equilibrio positivo del logístico generalizado existe solo por debajo de un umbral. Al cruzarlo choca con N = 0 y le cede la estabilidad, una bifurcación transcrítica:
 
 $$
-N^{*} = K\left(1-\frac{\nu\alpha c}{\mu}\right)^{1/\nu}, \qquad c < c^{*} = \frac{\mu}{\nu\alpha}
+N^{\ast} = K\left(1-\frac{\nu\alpha c}{\mu}\right)^{1/\nu}, \qquad c \lt c^{\ast} = \frac{\mu}{\nu\alpha}
 $$
 
 En el límite de Gompertz (ν → 0) el equilibrio es N\* = K·e^(−αc/μ) y el umbral tiende a infinito: con una dosis constante el tumor se reduce, pero este modelo nunca lo erradica.
@@ -229,7 +233,7 @@ En el límite de Gompertz (ν → 0) el equilibrio es N\* = K·e^(−αc/μ) y e
 En el sistema de angiogénesis (6)–(7) con c constante y F(x) = −μ ln x aparece también un umbral, ahora finito. El determinante del Jacobiano cambia de signo exactamente en él:
 
 $$
-N^{*} = K^{*} = \left(\frac{\omega-\alpha c}{\gamma}\right)^{3/2}, \qquad c < c^{*} = \frac{\omega}{\alpha}, \qquad \det J = \tfrac{2}{3}\mu(\omega-\alpha c)
+N^{\ast} = K^{\ast} = \left(\frac{\omega-\alpha c}{\gamma}\right)^{3/2}, \qquad c \lt c^{\ast} = \frac{\omega}{\alpha}, \qquad \det J = \tfrac{2}{3}\mu(\omega-\alpha c)
 $$
 
 Dentro del modelo, una dosis constante por encima de ω/α colapsa el tumor, mientras que por debajo solo reduce su tamaño de equilibrio. Estos son resultados del modelo, no una recomendación clínica. La Figura 8 muestra ambos diagramas de bifurcación.
