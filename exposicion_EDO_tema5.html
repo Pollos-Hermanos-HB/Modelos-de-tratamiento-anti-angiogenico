@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EDO Tema 5 · Modelos simples de crecimiento tumoral</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--bg:#0b0e14;--fg:#ece6e2;--b:#58C4DD;--g:#83C167;--y:#F4D03F;--r:#FC6255;--o:#FF862F;--p:#9A72AC;--dim:#7b8794}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#000;overflow:hidden;font-family:"CMU Serif","Latin Modern Roman","Times New Roman",serif;color:var(--fg)}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;background:var(--bg);transform-origin:0 0;overflow:hidden}
+.slide{position:absolute;inset:0;padding:50px 70px;opacity:0;pointer-events:none;transition:opacity .5s}
+.slide.cur{opacity:1}
+h1{font-size:54px;font-weight:400;color:var(--fg)} h2{font-size:38px;font-weight:400;color:var(--b);margin-bottom:6px}
+.who{color:var(--dim);font-size:20px;margin-bottom:22px;font-style:italic}
+.mid{font-size:23px}.s{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.s.on{opacity:1;transform:none}
+p,li{font-size:25px;line-height:1.45} ul{list-style:none;padding:0}
+li{margin:10px 0;padding-left:26px;position:relative} li:before{content:"▸";position:absolute;left:0;color:var(--y)}
+.eq{font-size:28px;margin:10px 0}
+.katex{font-size:1.1em}
+.b{color:var(--b)}.g{color:var(--g)}.y{color:var(--y)}.r{color:var(--r)}.o{color:var(--o)}.p{color:var(--p)}.d{color:var(--dim)}
+.cols{display:flex;gap:36px;align-items:flex-start}.cols>div{flex:1}
+.box{border:2px solid var(--b);border-radius:10px;padding:14px 22px;font-size:24px}
+canvas{background:#0f131c;border:1px solid #243044;border-radius:8px}
+table{border-collapse:collapse;font-size:24px;margin-top:10px}td,th{padding:8px 18px;border-bottom:1px solid #2a3547;text-align:center}th{color:var(--y);font-weight:400}
+/* secciones */
+.sec{background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center}
+.sec .num{font-size:200px;color:var(--b);opacity:0;line-height:1}
+.sec .tt{font-size:52px;opacity:0;margin-top:10px;text-align:center}
+.sec .ln{height:4px;width:0;background:linear-gradient(90deg,var(--b),var(--g));margin-top:26px}
+.sec .sub{opacity:0;color:var(--dim);font-size:24px;margin-top:20px;font-style:italic}
+.sec .wipe{position:absolute;inset:0;background:var(--b);transform:translateX(-101%)}
+.sec.cur .wipe{animation:wipe 1s ease-in-out}
+.sec.cur .num{animation:up .8s .5s forwards}.sec.cur .tt{animation:up .8s .7s forwards}
+.sec.cur .ln{animation:ln 1s .9s forwards}.sec.cur .sub{animation:up .8s 1.3s forwards}
+@keyframes wipe{0%{transform:translateX(-101%)}50%{transform:none}100%{transform:translateX(101%)}}
+@keyframes up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes ln{to{width:420px}}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:var(--b);transition:width .4s}
+#hud{position:absolute;right:24px;bottom:14px;font-size:22px;color:var(--fg);opacity:.85;z-index:5}
+.tl{display:flex;gap:10px;margin-top:22px}.tl div{flex:1;text-align:center;padding:10px;border-radius:8px;background:#161c28;font-size:20px}
+</style></head><body>
+<div id="stage">
+<section class="slide sec"><div class="wipe"></div><div class="num" style="color:var(--b)">01</div><div class="tt">¿Por qué los tumores se frenan solos?</div><div class="ln"></div><div class="sub">Sergio · modelos de una EDO</div></section>
+
+<section class="slide">
+ <h2>Del exponencial al logístico generalizado</h2><div class="who">Sergio · de dónde sale cada modelo</div>
+ <div class="s" data-s="1"><p><b class="b">Punto de partida.</b> Si cada célula se divide a ritmo fijo y sin competencia:</p>
+ <div class="eq">$N'=\lambda N \;\Rightarrow\; N(t)=N_0e^{\lambda t}$</div>
+ <p>Crece sin cota, pero casi todo tumor sólido <b class="y">desacelera</b>: la tasa específica $N'/N$ baja al crecer $N$.</p></div>
+ <div class="s" data-s="2" style="margin-top:14px"><p><b class="g">Corrección.</b> Se impone una capacidad de carga $K>0$ del huésped: $N'=N\,F(N/K)$, con $F$ decreciente y $F(1)=0$. La elección usual es</p>
+ <div class="eq">$N'=\dfrac{\mu N}{\nu}\Big[1-\Big(\dfrac NK\Big)^{\nu}\Big]$</div>
+ <p>$\nu=1$ es el logístico clásico; para tumores de mama se estima $\nu\approx0.25$.</p></div>
+ <div class="s" data-s="3" style="margin-top:14px"><p><b class="r">Gompertz como límite $\nu\to0$.</b> Con $x=N/K$: $x^\nu=e^{\nu\ln x}\approx1+\nu\ln x$, luego $\tfrac1\nu(1-x^\nu)\to-\ln x$:</p>
+ <div class="eq">$N'=-\mu N\ln\dfrac NK$</div></div>
+</section>
+<section class="slide">
+ <h2>Resolución por separación de variables</h2><div class="who">Sergio</div>
+ <div class="cols"><div>
+  <div class="s" data-s="1"><p class="b">Logístico generalizado</p><p class="mid">Cambio $u=(N/K)^\nu$. Por la regla de la cadena $u'=\nu u\,N'/N$, y $\nu$ se cancela:</p><div class="eq">$u'=\mu u(1-u)$</div></div>
+  <div class="s" data-s="2"><p class="mid">Como $\frac1{u(1-u)}=\frac1u+\frac1{1-u}$, integrando: $u=\dfrac1{1+Be^{-\mu t}}$, con $B=(K/N_0)^\nu-1$. Deshaciendo, $N=Ku^{1/\nu}$:</p>
+  <div class="eq">$N(t)=K\big[1+((K/N_0)^\nu-1)e^{-\mu t}\big]^{-1/\nu}$</div></div>
+ </div><div>
+  <div class="s" data-s="2"><p class="r">Gompertz</p><p class="mid">Con $y=\ln(N/K)$ se tiene $y'=N'/N=-\mu y$, lineal:</p><div class="eq">$y=y_0e^{-\mu t},\quad y_0=\ln(N_0/K)$</div>
+  <div class="eq">$N(t)=K\exp\!\big[\ln(N_0/K)\,e^{-\mu t}\big]$</div></div>
+ </div></div>
+</section>
+<section class="slide">
+ <h2>Equilibrios e inflexión</h2><div class="who">Sergio · $f(N)$ = lado derecho de la EDO</div>
+ <div class="cols"><div>
+  <div class="s" data-s="1"><p class="mid"><b class="b">Equilibrios:</b> $f(N)=0\Rightarrow N=0,\ N=K$. Derivando,</p><div class="eq" style="font-size:25px">$f'(N)=\dfrac\mu\nu\big[1-(1+\nu)(N/K)^\nu\big]$</div>
+  <p class="mid">$f'(0)=\mu/\nu>0$: <span class="r">inestable</span>. $f'(K)=-\mu<0$: <span class="g">estable</span>, atrae a todo $N_0>0$.</p></div>
+  <div class="s" data-s="2"><p class="mid"><b class="y">Inflexión:</b> $N''=f'(N)N'$ y $N'>0$, así que ocurre donde $f'(N)=0$:</p><div class="eq">$\Big(\dfrac NK\Big)^\nu=\dfrac1{1+\nu}\Rightarrow N_{inf}=K(1+\nu)^{-1/\nu}$</div>
+  <p class="mid"><span class="b">$K/2$</span> ($\nu=1$) · <span class="g">$\approx0.41K$</span> ($\nu=0.25$) · <span class="r">$K/e$</span> (Gompertz, pues $(1+\nu)^{-1/\nu}\to e^{-1}$)</p></div>
+ </div><canvas class="s" data-s="1" data-plot="growth" width="520" height="400"></canvas></div>
+</section>
+<section class="slide sec"><div class="wipe"></div><div class="num" style="color:var(--g)">02</div><div class="tt">El tumor construye sus vasos y se autolimita</div><div class="ln"></div><div class="sub">Alejandro · angiogénesis, equilibrio y estabilidad</div></section>
+
+<section class="slide">
+ <h2 style="color:var(--g)">K deja de ser constante</h2><div class="who">Alejandro</div>
+ <div class="s" data-s="1"><div class="eq">$N'=N\,F(N/K)$</div><div class="eq">$K'=-\alpha c(t)K+\textcolor{#83C167}{\omega N}-\textcolor{#FC6255}{\gamma N^{2/3}K}$</div></div>
+ <ul class="s" data-s="2"><li><b class="g">$\omega N$</b>: estimulación local de células endoteliales por el tumor</li>
+ <li><b class="r">$\gamma N^{2/3}K$</b>: inhibición de largo alcance (superficie frente a volumen)</li>
+ <li><b class="y">$-\alpha c K$</b>: el fármaco ataca los vasos, no el tumor</li></ul>
+</section>
+<section class="slide">
+ <h2 style="color:var(--g)">Equilibrio global y estable</h2><div class="who">Alejandro</div>
+ <div class="cols"><div>
+  <div class="s" data-s="1"><p class="mid">$N'=0\Rightarrow N=K$; $K'=0\Rightarrow \omega=\gamma N^{2/3}$:</p><div class="eq">$N^*=K^*=(\omega/\gamma)^{3/2}$</div></div>
+  <div class="s" data-s="2"><p class="mid">Jacobiano, con $\sigma=-F'(1)>0$:</p><div class="eq">$J=\begin{pmatrix}-\sigma&\sigma\\ \omega/3&-\omega\end{pmatrix}$</div>
+  <p class="mid">$\operatorname{tr}J=-(\omega+\sigma)<0$, $\det J=\tfrac23\omega\sigma>0$, discriminante $>0$ ⇒ <b class="g">nodo estable</b>.</p>
+  <p class="d" style="font-size:20px">Aquí solo probamos la estabilidad <i>local</i>. Que el equilibrio sea atractor <b class="g">global</b> es un resultado del artículo: Sachs, Hlatky &amp; Hahnfeldt (2001), <i>Simple ODE models of tumor growth and anti-angiogenic or radiation treatment</i>, Math. Comput. Modelling 33, 1297–1305.</p></div></div>
+ <canvas class="s" data-s="1" data-plot="phase" width="520" height="470"></canvas></div>
+</section>
+<section class="slide sec"><div class="wipe"></div><div class="num" style="color:var(--y)">03</div><div class="tt">Tratamiento antiangiogénico</div><div class="ln"></div><div class="sub">Adán · c(t) variable y la Fig. 1 del artículo</div></section>
+
+<section class="slide">
+ <h2 style="color:var(--y)">Fig. 1 reproducida: dosis diaria en los días 10–19</h2><div class="who">Adán · $c(t)=c_0\sum_{k=10}^{19}S(t-k)e^{-r(t-k)}$ · sistema no autónomo</div>
+ <div class="cols"><canvas class="s" data-s="1" data-plot="fig1" width="740" height="400"></canvas>
+ <div><ul style="font-size:22px">
+ <li class="s" data-s="1">$K$ cae en <b class="y">días</b>; el tumor responde con retraso $\sim1/\mu\approx4.3$ d</li>
+ <li class="s" data-s="2">Al parar, $\omega N$ reconstruye $K$ y el tumor <b class="r">rebrota</b></li>
+ <li class="s" data-s="2">Rebrote más lento: $\mu\ln(K/V)$ pasa de 0.25 a 0.12 d$^{-1}$</li></ul>
+ <p class="s d" data-s="2" style="font-size:18px">Parámetros supuestos: $\mu=0.23$, $\omega=0.85$, $\gamma=0.055$, $\alpha c_0=1.75$, $r=1.4$</p></div></div>
+</section>
+<section class="slide sec"><div class="wipe"></div><div class="num" style="color:var(--o)">04</div><div class="tt">Radioterapia: de dos EDO a la fórmula LQ</div><div class="ln"></div><div class="sub">Karel · modelo lineal-cuadrático</div></section>
+
+<section class="slide">
+ <h2 style="color:var(--o)">Deducción de la fórmula LQ</h2><div class="who">Karel · $U$ = DSB por célula, $N$ = células</div>
+ <div class="s" data-s="1"><div class="eq">$U'=\delta R-U/\tau-\gamma U^2,\qquad N'=-(\alpha R+\kappa U^2)N$</div>
+ <p class="mid">Con $\gamma=0$ y dosis aguda: $U(0^+)=\delta D$, luego $U=\delta D\,e^{-t/\tau}$ y $\displaystyle\int_0^\infty U^2dt=\frac{\delta^2D^2\tau}{2}$.</p></div>
+ <div class="s" data-s="2"><div class="eq">$\ln\dfrac N{N_0}=-\textcolor{#58C4DD}{\alpha D}-\textcolor{#FC6255}{\beta D^2},\qquad \beta=\dfrac{\delta^2\kappa\tau}{2}$</div></div>
+ <ul class="s" data-s="3"><li><b class="b">$\alpha$</b>: daño irreparable, lineal en la dosis</li>
+ <li><b class="r">$\beta$</b>: mala reparación de pares de DSB, cuadrático</li>
+ <li>$\gamma=0$ es razonable para $D\lesssim5$ Gy ($\gamma\tau\delta D\ll1$)</li></ul>
+</section>
+<section class="slide sec"><div class="wipe"></div><div class="num" style="color:var(--r)">05</div><div class="tt">¿Por qué prolongar o fraccionar la dosis cambia el efecto?</div><div class="ln"></div><div class="sub">Brayan · la función G de Lea–Catcheside</div></section>
+
+<section class="slide">
+ <h2 style="color:var(--r)">La función G</h2><div class="who">Brayan · $\ln(N/N_0)=-\alpha D-\beta GD^2$</div>
+ <div class="cols"><div>
+  <div class="s" data-s="1"><div class="eq" style="font-size:25px">$G=\dfrac2{D^2}\displaystyle\int_0^T\!R(t_1)\!\int_0^{t_1}\!R(t_2)e^{-(t_1-t_2)/\tau}dt_2dt_1$</div>
+  <p class="mid"><b class="b">Aguda:</b> $G=1$. <b class="b">Constante</b> ($x=T/\tau$): $G=\dfrac{2(x-1+e^{-x})}{x^2}$. <b class="o">Exponencial:</b> $G=\dfrac1{1+\theta/\tau}$.</p></div>
+  <div class="s" data-s="2"><p class="mid y">$x\to0$: $G\to1$ · $x\to\infty$: $G\sim2/x\to0$</p>
+  <p class="mid">Prolongar da tiempo a reparar: los pares letales se destruyen antes de formarse. Solo cae el término <b class="r">$\beta$</b>.</p></div></div>
+ <canvas class="s" data-s="1" data-plot="gplot" width="520" height="400"></canvas></div>
+</section>
+<section class="slide">
+ <h2 style="color:var(--r)">Efecto sobre la supervivencia ($\alpha/\beta=3$ Gy)</h2><div class="who">Brayan · parámetros supuestos</div>
+ <table class="s" data-s="1"><tr><th>Irradiación</th><th>$G$</th><th>$S(2\text{ Gy})$</th><th>$S(10\text{ Gy})$</th></tr>
+ <tr><td>Aguda</td><td>1</td><td>0.607</td><td>$1.5\times10^{-3}$</td></tr>
+ <tr><td>Constante $T=4\tau$</td><td>0.377</td><td>0.687</td><td>$3.4\times10^{-2}$</td></tr>
+ <tr><td>Constante $T=16\tau$</td><td>0.117</td><td>0.724</td><td>0.124</td></tr></table>
+ <div class="s" data-s="2"><p style="margin-top:26px">A 10 Gy, prolongar a $16\tau$ multiplica la supervivencia por <b class="y">≈ 80</b>; a 2 Gy el efecto es modesto porque domina el término lineal.</p>
+ <p class="d" style="font-size:21px">RK4 reproduce LQ con error $\approx2\times10^{-8}$ ($\gamma=0$). Con $\gamma>0$, LQ sobrestima la muerte a dosis altas.</p></div>
+</section>
+<section class="slide">
+ <h2 style="color:var(--p)">Bifurcación transcrítica</h2><div class="who">Roger · una EDO con $c$ constante</div>
+ <div class="cols"><div>
+  <div class="s" data-s="0"><p class="mid"><b class="b">Equilibrios:</b> $N=0$ y</p><div class="eq" style="font-size:25px">$N^*=K\Big(1-\dfrac c{c^*}\Big)^{1/\nu},\quad c^*=\dfrac\mu{\nu\alpha}$</div><p class="mid">que existe solo si $c&lt;c^*$.</p></div>
+  <div class="s" data-s="0"><p class="mid">$g'(0)=\dfrac\mu\nu\Big(1-\dfrac c{c^*}\Big),\;\; g'(N^*)=-\mu\Big(1-\dfrac c{c^*}\Big)$</p>
+  <p class="mid"><b class="g">$c&lt;c^*$:</b> $N^*$ estable, $0$ inestable.<br><b class="r">$c&gt;c^*$:</b> solo $0$, estable.</p></div>
+  <div class="box s" data-s="0" style="margin-top:14px">En $c=c^*$, $N^*$ y $0$ intercambian estabilidad.</div>
+  <p class="s d" data-s="0" style="font-size:21px;margin-top:10px">Al subir la dosis, la rama positiva $N^*$ baja hasta chocar con $N=0$: el tumor pasa de estabilizarse en un tamaño $N^*$ a extinguirse.</p>
+ </div><canvas class="s" data-s="0" data-plot="bif" width="520" height="420"></canvas></div>
+</section>
+<section class="slide">
+ <h2 style="color:var(--p)">Caso Gompertz ($\nu\to0$)</h2><div class="who">Roger · $a=\alpha c/\mu$</div>
+ <div class="s" data-s="0"><p><b class="b">Límite</b> (forma $1^\infty$, L'Hôpital):</p>
+ <div class="eq">$N^*_\nu=K(1-\nu a)^{1/\nu}\;\longrightarrow\;Ke^{-\alpha c/\mu}&gt;0$</div></div>
+ <div class="s" data-s="0"><p>Además $c^*=\dfrac\mu{\nu\alpha}\to\infty$.</p>
+ <p class="r">Ninguna dosis constante finita erradica el tumor.</p>
+ <p class="d" style="font-size:21px">(Si erradicar es $N&lt;1$ célula: $c&gt;\frac\mu\alpha\ln K$.)</p>
+ <p class="mid" style="margin-top:14px">En Gompertz la dosis solo <b class="y">reduce el tamaño de equilibrio</b> (por el factor $e^{-\alpha c/\mu}$), pero nunca lo lleva a cero: no hay umbral $c^*$ finito.</p></div>
+</section>
+<section class="slide">
+ <h2 style="color:var(--p)">Estabilidad del equilibrio con angiogénesis</h2><div class="who">Roger · angiogénesis, equilibrio $N^*=K^*=\big(\tfrac{\omega-\alpha c}\gamma\big)^{3/2}$</div>
+ <div class="s" data-s="0"><div class="eq">$J=\begin{pmatrix}-\mu&\mu\\ \frac{\omega+2\alpha c}3&-\omega\end{pmatrix}$</div></div>
+ <div class="s" data-s="0"><p class="mid">$\operatorname{tr}J=-(\mu+\omega)&lt;0$, $\;\det J=\tfrac23\mu(\omega-\alpha c)&gt;0$ ⇒ <b class="g">nodo estable</b> si $c&lt;\omega/\alpha$.</p></div>
+ <p class="s mid" data-s="0" style="margin-top:14px">Traza negativa y determinante positivo implican autovalores de parte real negativa; el discriminante positivo los hace reales, así que tumor y vasos se acercan al equilibrio <b class="y">sin oscilar</b>.</p>
+ <div class="box s" data-s="0" style="margin-top:16px">Cerca del umbral $\det J\to0$: un autovalor tiende a $0^-$ y la convergencia se hace cada vez más lenta (ralentización crítica).</div>
+</section>
+<section class="slide">
+ <h2 style="color:var(--p)">Adimensionalización</h2><div class="who">Roger · $N_0=(\omega/\gamma)^{3/2}$, $\;n=N/N_0,\;k=K/N_0,\;\tau=\mu t$</div>
+ <div class="s" data-s="0"><div class="eq">$\dfrac{dn}{d\tau}=-n\ln\dfrac nk,\qquad \dfrac{dk}{d\tau}=\varepsilon\big(n-n^{2/3}k-\theta k\big)$</div>
+ <p class="mid">con $\varepsilon=\omega/\mu$ y $\theta=\alpha c/\omega$: <b class="y">4 parámetros → 2</b>.</p></div>
+ <p class="s mid" data-s="0" style="margin-top:14px">Al reescalar, solo importa cuánto valen $\varepsilon$ (rapidez de $K$ frente a $N$) y $\theta$ (dosis relativa a la estimulación $\omega$).</p>
+ <div class="box s" data-s="0" style="margin-top:20px">$n^*=k^*=(1-\theta)^{3/2}$, positivo si y solo si $\theta&lt;1$: el umbral es $\theta=1$.</div>
+</section>
+<div id="bar"></div><div id="hud"></div>
+</div>
+<script>
+const st=document.getElementById('stage'),slides=[...document.querySelectorAll('.slide')];
+function fit(){const k=Math.min(innerWidth/1280,innerHeight/720);st.style.transform=`scale(${k})`;st.style.left=(innerWidth-1280*k)/2+'px';st.style.top=(innerHeight-720*k)/2+'px'}
+addEventListener('resize',fit);fit();
+if(window.renderMathInElement)renderMathInElement(st,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});
+// --- utilidades de gráficos ---
+const C={b:'#58C4DD',g:'#83C167',y:'#F4D03F',r:'#FC6255',o:'#FF862F',p:'#9A72AC',f:'#ece6e2',d:'#7b8794'};
+function axes(c,x0,x1,y0,y1,lx,ly,logx){const x=c.getContext('2d'),W=c.width,H=c.height,L=52,B=38,T=14,R=14;x.clearRect(0,0,W,H);
+ const lg=logx?Math.log10:(v=>v);const X=v=>L+(lg(v)-lg(x0))/(lg(x1)-lg(x0))*(W-L-R),Y=v=>H-B-(v-y0)/(y1-y0)*(H-B-T);
+ x.strokeStyle='#3a475c';x.lineWidth=1.5;x.beginPath();x.moveTo(L,T);x.lineTo(L,H-B);x.lineTo(W-R,H-B);x.stroke();
+ x.fillStyle=C.d;x.font='15px serif';x.textAlign='center';x.fillText(lx,(L+W-R)/2,H-8);x.save();x.translate(14,(T+H-B)/2);x.rotate(-Math.PI/2);x.fillText(ly,0,0);x.restore();return{x,X,Y,W,H,L,B,T,R}}
+function line(a,pts,col,w=3,p=1){const x=a.x,n=Math.max(2,Math.floor(pts.length*p));x.strokeStyle=col;x.lineWidth=w;x.beginPath();pts.slice(0,n).forEach((q,i)=>{const X=a.X(q[0]),Y=a.Y(q[1]);i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke();return pts[n-1]}
+function dot(a,px,py,col){a.x.fillStyle=col;a.x.beginPath();a.x.arc(a.X(px),a.Y(py),6,0,7);a.x.fill()}
+function txt(a,s,px,py,col){a.x.fillStyle=col;a.x.font='17px serif';a.x.textAlign='left';a.x.fillText(s,a.X(px),a.Y(py))}
+function rk4(f,y,t0,t1,h,rec,every=1){let t=t0,out=[],i=0;const n=y.length;while(t<t1-1e-12){if(i++%every==0)out.push([t,...y]);const k1=f(t,y),k2=f(t+h/2,y.map((v,j)=>v+h/2*k1[j])),k3=f(t+h/2,y.map((v,j)=>v+h/2*k2[j])),k4=f(t+h,y.map((v,j)=>v+h*k3[j]));y=y.map((v,j)=>v+h/6*(k1[j]+2*k2[j]+2*k3[j]+k4[j]));t+=h}out.push([t,...y]);return out}
+// --- gráficos ---
+const PL={
+growth(c,p){const a=axes(c,0,20,0,1.05,'t (u.a.)','N/K');const mu=.5,N0=.01;
+ const cur=[[1,C.b,'ν=1'],[.25,C.g,'ν=0.25'],[0,C.r,'Gompertz']];
+ cur.forEach(([nu,col,lb],i)=>{const F=t=>nu?Math.pow(1+(Math.pow(1/N0,nu)-1)*Math.exp(-mu*t),-1/nu):Math.exp(Math.log(N0)*Math.exp(-mu*t));
+  const pts=[];for(let t=0;t<=20;t+=.1)pts.push([t,F(t)]);line(a,pts,col,3,p);
+  const ni=nu?Math.pow(1+nu,-1/nu):Math.exp(-1);const ti=pts.find(q=>q[1]>=ni);if(ti&&pts.indexOf(ti)<pts.length*p)dot(a,ti[0],ni,C.y);
+  a.x.fillStyle=col;a.x.font='17px serif';a.x.fillText(lb,a.L+300,a.Y(.28)+i*22+60)});
+ a.x.fillStyle=C.y;a.x.fillText('● inflexión',a.L+300,a.Y(.28)+130)},
+phase(c,p){const a=axes(c,0,2.2,0,2.2,'n = N/(ω/γ)^(3/2)','k = K/(ω/γ)^(3/2)');const e=3.7;
+ const f=(t,[n,k])=>[-n*Math.log(n/k),e*(n-Math.pow(n,2/3)*k)];
+ // campo de vectores (flechas de longitud fija: indican solo la dirección)
+ for(let n=.15;n<2.2;n+=.25)for(let k=.15;k<2.2;k+=.25){const v=f(0,[n,k]),e=1e-3,
+  dx=a.X(n+v[0]*e)-a.X(n),dy=a.Y(k+v[1]*e)-a.Y(k),m=Math.hypot(dx,dy)||1,ux=dx/m,uy=dy/m,L=15,
+  x0=a.X(n)-ux*L/2,y0=a.Y(k)-uy*L/2,x1=a.X(n)+ux*L/2,y1=a.Y(k)+uy*L/2,x=a.x;
+  x.strokeStyle=x.fillStyle='rgba(244,208,63,.65)';x.lineWidth=1.6;x.beginPath();x.moveTo(x0,y0);x.lineTo(x1,y1);x.stroke();
+  x.beginPath();x.moveTo(x1,y1);x.lineTo(x1-6*ux+3.5*uy,y1-6*uy-3.5*ux);x.lineTo(x1-6*ux-3.5*uy,y1-6*uy+3.5*ux);x.closePath();x.fill()}
+ const d=[];for(let v=.02;v<=2.2;v+=.02)d.push([v,v]);line(a,d,C.r,2,1);
+ const d2=[];for(let v=.01;v<=2.2;v+=.02)d2.push([v,Math.cbrt(v)]);line(a,d2,C.g,2,1);
+ [[.1,2],[.4,1.8],[.1,.3],[1.5,.4],[2,.2],[2.1,2.1]].forEach(s=>{const tr=rk4(f,s,0,5,.01,0,4).map(q=>[q[1],q[2]]);line(a,tr,C.b,2.5,p);dot(a,s[0],s[1],C.b)});
+ if(p>.99)dot(a,1,1,C.f);txt(a,'k = n',1.5,1.75,C.r);a.x.fillStyle='rgba(244,208,63,.9)';a.x.font='16px serif';a.x.textAlign='left';a.x.fillText('➤ campo de vectores (N′, K′)',a.L+10,a.T+18);txt(a,'k = n^(1/3)',1.35,1.12,C.g)},
+fig1(c,p){const a=axes(c,0,25,0,10.5,'tiempo (días)','volumen (cc)');const mu=.23,w=.85,g=.055,ac=1.75,r=1.4;
+ const cc=t=>{let s=0;for(let k=10;k<=19;k++)if(t>=k)s+=Math.exp(-r*(t-k));return ac*s};
+ const f=(t,[N,K])=>[-mu*N*Math.log(N/K),-cc(t)*K+w*N-g*Math.pow(N,2/3)*K];
+ const s=rk4(f,[.08,2.5],0,25,.005,0,20);
+ a.x.fillStyle='rgba(255,255,255,.07)';a.x.fillRect(a.X(10),a.T,a.X(20)-a.X(10),a.H-a.B-a.T);
+ line(a,s.map(q=>[q[0],q[2]]),C.o,3,p);line(a,s.map(q=>[q[0],q[1]]),C.b,3.5,p);
+ txt(a,'K(t)',1,3.1,C.o);txt(a,'V(t)',1,.8,C.b);txt(a,'tratamiento',11.2,9.7,C.d)},
+gplot(c,p){const a=axes(c,.01,100,0,1.05,'T/τ  (o θ/τ)','G',true);const A=[],B=[];
+ for(let l=-2;l<=2;l+=.02){const x=Math.pow(10,l);A.push([x,2*(x-1+Math.exp(-x))/(x*x)]);B.push([x,1/(1+x)])}
+ line(a,A,C.b,3,p);line(a,B,C.o,3,p);txt(a,'dosis constante',.02,.35,C.b);txt(a,'exponencial',.02,.2,C.o)},
+bif(c,p){const a=axes(c,0,1.15,-.12,1.05,'c / c*','N* / K');const m1=[],m2=[];
+ for(let x=0;x<=1;x+=.005)m1.push([x,Math.pow(1-x,4)]);
+ line(a,[[0,0],[1,0]],C.r,3,1);line(a,[[1,0],[1.15,0]],C.g,3,1);
+ a.x.setLineDash([6,5]);line(a,[[1,-.12],[1,1]],C.y,1.5,1);a.x.setLineDash([]);
+ line(a,m1,C.g,3,p);txt(a,'N* (estable), ν=0.25',.3,.5,C.g);txt(a,'N=0 inestable',.1,-.07,C.r);txt(a,'N=0 estable',.72,-.07,C.g);txt(a,'c*',1.01,.92,C.y)}
+};
+// --- motor de pasos ---
+let cur=0,step=0,anim=new Map();
+const maxS=s=>Math.max(0,...[...s.querySelectorAll('[data-s]')].map(e=>+e.dataset.s));
+function drawAnim(e,dur=1600){const fn=PL[e.dataset.plot];if(!fn)return;cancelAnimationFrame(anim.get(e));const t0=performance.now();
+ (function f(t){const p=Math.min(1,(t-t0)/dur);fn(e,1-Math.pow(1-p,3));if(p<1)anim.set(e,requestAnimationFrame(f))})(t0)}
+function render(animate){slides.forEach((s,i)=>s.classList.toggle('cur',i==cur));const s=slides[cur];
+ s.querySelectorAll('[data-s]').forEach(e=>{const on=+e.dataset.s<=step,was=e.classList.contains('on');e.classList.toggle('on',on);
+  if(e.dataset.plot&&on&&(!was||!animate&&!e._d)){if(animate&&!was)drawAnim(e);else{cancelAnimationFrame(anim.get(e));PL[e.dataset.plot](e,1)}}
+  if(!on)e._d=0;else e._d=1});
+ document.getElementById('bar').style.width=(cur/(slides.length-1)*100)+'%';
+ document.getElementById('hud').textContent=(cur+1)+' / '+slides.length+'   ← → '}
+function next(){const s=slides[cur];if(step<maxS(s)){step++;render(true)}else if(cur<slides.length-1){cur++;step=0;render(true)}}
+function prev(){if(step>0){step--;render(false)}else if(cur>0){cur--;step=maxS(slides[cur]);render(false)}}
+addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();next()}
+ else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
+ else if(e.key=='Home'){cur=0;step=0;render(false)}else if(e.key=='End'){cur=slides.length-1;step=maxS(slides[cur]);render(false)}
+ else if(e.key=='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+addEventListener('click',e=>{e.clientX>innerWidth/2?next():prev()});
+render(true);
+</script></body></html>
